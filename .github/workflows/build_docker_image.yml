@@ -1,14 +1,7 @@
 name: Build And Push Docker Image
 
 on:
-  push:
-    branches:
-      - 'main'
-    tags:
-      - 'v*'
-
   workflow_dispatch:
-
 jobs:
   build:
 
@@ -50,14 +43,11 @@ jobs:
           images: |
             name=ghcr.io/${{ github.repository }},enable=true
             name=${{ vars.DOCKERHUB_IMAGE_NAME || 'default-image' }},enable=${{ vars.DOCKERHUB_IMAGE_NAME != '' }}
-          # generate Docker tags based on the following events/attributes
-          #   nightly, master, pr-2, 1.2.3, 1.2, 1
           tags: |
-            type=match,pattern=^v(\d{8}-\d+)$,group=1
-            type=match,pattern=^v(\d{8})-\d+$,group=1
-            type=raw,value=ci-{{commit_date 'YYYYMMDD-HHmmss' tz='Asia/Shanghai'}}-{{sha}},enable=${{ github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/') }}
+            type=raw,value=${{ github.ref_name }}
           flavor: |
-            latest=${{ github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/') }}
+            latest=false
+
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -70,7 +60,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
