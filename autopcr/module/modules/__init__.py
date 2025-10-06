@@ -68,9 +68,9 @@ daily_modules = ModuleList(
         underground_skip,
         special_underground_skip,
         tower_cloister_sweep,
-        smart_very_hard_sweep,
         jjc_reward,
         talent_sweep,
+        smart_very_hard_sweep,
         xinsui8_sweep,
         xinsui7_sweep,
         xinsui6_sweep,
@@ -112,7 +112,8 @@ daily_modules = ModuleList(
         jjc_shop,
         pjjc_shop,
         clanbattle_shop,
-        
+        master_shop_talent,
+
         clan_equip_request,
         love_up,
         shiori_mission_check,
@@ -196,7 +197,9 @@ tool_modules = ModuleList(
     '工具',
     'tool',
     [
-        return_jewel,
+        find_talent_quest,
+        find_clan_talent_quest,
+        # return_jewel,
         # cook_pudding,
         ex_equip_rank_up,
         ex_equip_enhance_up,
@@ -212,6 +215,5 @@ tool_modules = ModuleList(
         remove_cb_ex_equip,
         remove_cb_support,
         redeem_unit_swap,
-        query_deep_progress,
     ]
 )
