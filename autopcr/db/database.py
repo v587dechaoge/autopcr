@@ -1652,7 +1652,7 @@ class database():
         return item[0] == eInventoryType.Item and item[1] >= 32000 and item[1] < 33000
 
     def is_equip(self, item: ItemType, uncraftable_only: bool = False) -> bool:
-        return item[0] == eInventoryType.Equip and item[1] >= 101000 and item[1] < 140000 and (not uncraftable_only or not self.is_equip_craftable(item))
+        return item[0] == eInventoryType.Equip and (item[1] >= 101000 and item[1] < 140000 or item[1] > 160000) and (not uncraftable_only or not self.is_equip_craftable(item))
 
     def is_equip_raw_ore(self, item: ItemType) -> bool:
         return item[0] == eInventoryType.Equip and item[1] >= 150001 and item[1] < 160000
@@ -2115,6 +2115,9 @@ class database():
         talent_id = db.talent_quest_area_data[area_id].talent_id
         return talent_id
 
+    def equip_candidate(self) -> List[int]:
+        return [p for p in self.equip_data if self.is_equip((eInventoryType.Equip, p))]
+
     def talent_candidate(self) -> List[str]:
         return [f"{talent_id}: {self.talents[talent_id].talent_name}" for talent_id in self.talents]
 
@@ -2154,6 +2157,8 @@ class database():
         return list(range(st, self.unique_equipment_max_level[equip_slot] + 1))
 
     def last_normal_quest(self) -> List[int]:
+        quest_ids = sorted(self.normal_quest_data.keys(), reverse=True)
+        return quest_ids[:5]
         last_start_time = flow(self.normal_quest_data.values()) \
                 .where(lambda x: db.parse_time(x.start_time) <= apiclient.datetime) \
                 .max(lambda x: x.start_time).start_time
